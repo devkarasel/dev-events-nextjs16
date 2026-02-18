@@ -1,7 +1,9 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
+import { Key } from "readline";
 
 // TypeScript interface for Event document
 export interface IEvent extends Document {
+  id: Key | null | undefined;
   title: string;
   slug: string;
   description: string;
@@ -168,12 +170,10 @@ function normalizeTime(timeStr: string): string {
  * 2. Normalize date to ISO format
  * 3. Normalize time to 24-hour format
  */
-EventSchema.pre("save", async function (next) {
-  // Generate slug only if title is new or modified
+EventSchema.pre("save", async function () {
   if (this.isModified("title") || this.isNew) {
     this.slug = generateSlug(this.title);
 
-    // Ensure slug uniqueness by appending timestamp if duplicate exists
     const existingEvent = await mongoose.models.Event?.findOne({
       slug: this.slug,
       _id: { $ne: this._id },
@@ -184,7 +184,6 @@ EventSchema.pre("save", async function (next) {
     }
   }
 
-  // Normalize date and time on every save
   if (this.isModified("date") || this.isNew) {
     this.date = normalizeDate(this.date);
   }
@@ -192,9 +191,8 @@ EventSchema.pre("save", async function (next) {
   if (this.isModified("time") || this.isNew) {
     this.time = normalizeTime(this.time);
   }
-
-  next();
 });
+
 
 // Prevent model recompilation during hot reload in development
 const Event: Model<IEvent> =
