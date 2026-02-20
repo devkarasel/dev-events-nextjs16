@@ -1,7 +1,8 @@
 'use client';
 
-import Image from "next/image"
-import posthog from "posthog-js"
+import Image from "next/image";
+import Link from "next/link";
+import posthog from "posthog-js";
 
 const ExploreBtn = () => {
   const handleClick = () => {
@@ -9,14 +10,11 @@ const ExploreBtn = () => {
   };
 
   return (
-    <button type="button" id="explore-btn" className="mt-07 mx-auto" onClick={handleClick}>
-        <a href="#events">
-            Explore Events
-            <Image src="/icons/arrow-down.svg" alt="arrow-down" width={24}   height={24}
-/>
-</a>
-        </button>
-  )
-}
+    <Link href="/events#events-list" id="explore-btn" className="mt-07 mx-auto" onClick={handleClick}>
+      Explore Events
+      <Image src="/icons/arrow-down.svg" alt="arrow-down" width={24} height={24} />
+    </Link>
+  );
+};
 
 export default ExploreBtn;
